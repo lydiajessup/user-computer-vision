@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <!---installing the socket and javascript again--->
+    <script src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript">
+
+			var socket = io.connect();
+
+      //connsole log when connected
+			socket.on('connect', function() {
+				console.log("Connected");
+				socket.emit('watch',{});
+			});
+
+
+      var wordinput = [];
+
+			// When the window loads
+			window.addEventListener('load', function() {
+				console.log("Window Loaded");
+
+        //listening for data sent through socket
+				socket.on('drawing', function(data) {
+
+
+					//if (data.event == "mousemove") {
+
+            //create new div for each xy pair
+            var element = document.createElement('DIV');
+  					element.id = data.socket_id;
+  					element.style.backgroundColor = "mediumpurple";
+  					element.style.width = "2px";
+  					element.style.height = "2px";
+  					document.body.appendChild(element);
+  					element.style.position = "absolute";
+            element.style.top = data.y;
+            element.style.left = data.x;
+
+
+          //might add this back in...
+
+					// } else if (data.event == "keypress") {
+          //   //adding the description to the div
+          //   //make a variable from the div in the html
+          //   var description = document.getElementById('adjective');
+          //   //use input to edit the inner html of the div
+          //   wordinput.push(data.key);
+          //   var descripdisplay = wordinput.join('');
+          //   description.innerHTML = descripdisplay;
+          //   //element.innerHTML = element.innerHTML + data.key;
+          //   //console.log(description.innerHTML);
+					// }
+				});
+			});
+
+    </script>
+  </head>
+  <body>
+
+  <div id="adjective"></div>
+
+  </body>
+</html>

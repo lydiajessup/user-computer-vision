@@ -1,0 +1,132 @@
+<html>
+  <head>
+  <!---p5js video --->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js"></script>
+   <link rel="stylesheet" type="text/css" href="style.css">
+    <!---adding websocket client and javascript--->
+		<script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+
+
+      //declare other variables
+      var mousearray = [];
+
+      //////////////////////////
+      // Web socket connect!
+      /////////////////////////
+
+      //make a variable and conect to websocket
+			var socket = io.connect();
+
+      //turning socket on during connection
+			socket.on('connect', function() {
+				console.log("Connected");
+        //socket.emit('history', null);
+			});
+
+      //socket for when the mouse movement and click event
+      socket.on('mouse',
+        function (data){
+          console.log("xy: " + data.x + "" + data.y);
+      });
+
+      ///////////////////
+      // Gather + send Data
+      //////////////////////
+
+      /////////first mouse movements
+
+      //get xy position and save in array
+      document.addEventListener('mousemove', function(windowEvent){
+        //sendmouse(windowEvent.screenX, windowEvent.screenY);
+        saveMouse(windowEvent.screenX, windowEvent.screenY);
+      });
+
+      //function to save mouse position and put it in an array
+      var saveMouse = function(xpos,ypos){
+        mousearray.push(xpos, ypos);//push xy into array
+        //console.log(mousearray);
+      };
+
+
+      /////////send everything
+
+      //wait for click to send
+      document.addEventListener("click", function() {
+
+        //get the message the was inputted
+        var wordVal = document.getElementById('message').value;
+
+        //combine message and xy position array into one object to send
+        var everything = {
+          adjective: wordVal,
+          drawing: mousearray
+        }
+
+        //send through mouse socket
+        socket.emit('mouse', everything);
+      });
+
+      //////////////////////////////
+      //Events for watcher
+      /////////////////////////////
+
+      //creating event message function for watcher
+      // function sendit(evt, message) {
+      //   socket.emit(evt, message);
+      // }
+
+			//When the window loads
+			window.addEventListener('load', function() {
+				console.log("Window Loaded");
+
+				// Mousemove event
+        //going to keep this so people can make a drawing
+        //calling the send it function with the event and the message
+        //every time the mouse moves, the position is sent through the
+        //web socket to the server
+
+      	document.addEventListener('mousemove', function(e) {
+					//console.log(e);
+					socket.emit('drawing', {x: e.clientX, y: e.clientY});
+				});
+
+			});
+    </script>
+  </head>
+  <body>
+
+  <!---info--->
+  <h1 id = "title">Towards A User Generated Computer Vision Dataset</h1>
+  <div id = "about">
+    <p>This project aims to develop the possibility of "user-generated computer
+      vision." Using this website, you can draw yourself as you see yourself
+      through your webcam - instead of the computer deciding how to see you. You
+      can also choose how the computer "categorizes" you. The browser collects the
+      data you supply through this page to create a labeled image dataset. The next
+      stage of the project will be to use this dataset to teach computers
+      to hopefully see in a new way.</p>
+  </div>
+
+  <div id = "instructions">
+    <p>1. Trace your face in whatever amount of detail you want.
+    <br>Don't worry if you can't see what you're drawing - the computer can.
+    <br>2. Type in an adjective to describe yourself
+    <br>3. Hit submit</p>
+  </div>
+
+  <!---reference to p5js--->
+  <div id = "video">
+  <script src="sketch.js"></script>
+  </div>
+
+  <!---input--->
+  <input type="text" id="message" name="message">
+  <input type="submit" id="sendit" value="submit">
+
+
+
+  </body>
+</html>

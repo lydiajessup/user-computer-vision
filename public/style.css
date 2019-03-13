@@ -1,0 +1,52 @@
+html, body {
+
+  font-family: "Arial", sans-serif;
+  background-color: thistle;
+  color: cornflowerblue;
+  padding: 20px;
+
+}
+
+#title{
+  position: relative;
+  border: dashed cornflowerblue;
+  width: 820px;
+  left: 50px;
+  padding: 20px;
+
+}
+
+
+#about{
+  top: 20px;
+  position: relative;
+  width: 400px;
+  border: dashed cornflowerblue;
+  padding: 20px;
+}
+
+
+
+#instructions{
+  position: relative;
+  width: 400px;
+  left: 500px;
+  top: -40px;
+  border: dashed cornflowerblue;
+  padding: 20px;
+
+}
+
+#message{
+  position:absolute;
+  top: 600px;
+  left: 500px;
+
+}
+
+#sendit{
+  position:absolute;
+  top: 620px;
+  left: 499px;
+
+}
